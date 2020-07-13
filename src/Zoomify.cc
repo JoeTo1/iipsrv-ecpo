@@ -5,7 +5,7 @@
     * (www.oldmapsonline.org) from Ministry of Culture of the Czech Republic      *
 
 
-    Copyright (C) 2008-2015 Ruven Pillay.
+    Copyright (C) 2008-2020 Ruven Pillay.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ void Zoomify::run( Session* session, const std::string& argument ){
   unsigned int height = (*session->image)->getImageHeight();
 
 
-  unsigned int tw = (*session->image)->getTileWidth();
+  int tw = (*session->image)->getTileWidth();
   unsigned int numResolutions = (*session->image)->getNumResolutions();
 
 
@@ -107,17 +107,13 @@ void Zoomify::run( Session* session, const std::string& argument ){
 			  << ", image height: " << height << endl;
     }
 
-    char str[1024];
-    snprintf( str, 1024,
-	      "Server: iipsrv/%s\r\n"
-	      "Content-Type: application/xml\r\n"
-	      "Last-Modified: %s\r\n"
-	      "%s\r\n"
-	      "\r\n"
-	      "<IMAGE_PROPERTIES WIDTH=\"%d\" HEIGHT=\"%d\" NUMTILES=\"%d\" NUMIMAGES=\"1\" VERSION=\"1.8\" TILESIZE=\"%d\" />",
-	      VERSION, (*session->image)->getTimestamp().c_str(), session->response->getCacheControl().c_str(), width, height, ntiles, tw );
+    // Format our output
+    stringstream header;
+    header << session->response->createHTTPHeader( "xml", (*session->image)->getTimestamp() )
+	   << "<IMAGE_PROPERTIES WIDTH=\"" << width << "\" HEIGHT=\"" << height << "\" "
+	   << "NUMTILES=\"" << ntiles << "\" NUMIMAGES=\"1\" VERSION=\"1.8\" TILESIZE=\"" << tw << "\"/>";
 
-    session->out->printf( (const char*) str );
+    session->out->printf( (const char*) header.str().c_str() );
     session->response->setImageSent();
 
     return;
