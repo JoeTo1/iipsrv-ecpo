@@ -5,8 +5,8 @@ c://data/images/imageStorage/ecpo_new/
 
 3. Start Docker image and port (windows enviroment)
 
-docker run -d -p 8000:80 JoeTo1/iipsrv-ecpo
-docker run -d -p 8000:80 -v c:/data:/data JoeTo1/iipsrv-ecpo
+docker run -d -p 8000:80 joeto2019/iipsrv-ecpo
+docker run -d -p 8000:80 -v c:/data:/data joeto2019/iipsrv-ecpo
 
 4. Open Browser and open image on iip-webserver
 
